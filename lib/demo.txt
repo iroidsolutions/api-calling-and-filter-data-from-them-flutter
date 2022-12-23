@@ -1,0 +1,67 @@
+body: FutureBuilder<List<Model>>(
+        future: res.fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              children: [
+                DropdownButton(
+                  value: selectValue,
+                  items: item.map((e) {
+                    return DropdownMenuItem(
+                      value: e,
+                      child: Text(e),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectValue = value!;
+                    });
+                  },
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: ((context, index) {
+                      List<Model> alltrue = [];
+
+                      alltrue = snapshot.data!
+                          .where((element) =>
+                              element.completed.toString() == selectValue)
+                          .toList();
+                      print(alltrue.length);
+
+                      if (selectValue == true.toString()) {
+                        for (int i = 0; i < alltrue.length; i++) {
+                          return ListTile(
+                            leading: Text(alltrue[i].id.toString()),
+                            title: Text(alltrue[i].title),
+                            trailing: Text(alltrue[index].completed.toString()),
+                          );
+                        }
+                      } else if (selectValue == false.toString()) {
+                        for (int i = 0; i < alltrue.length; i++) {
+                          return ListTile(
+                            leading: Text(alltrue[i].id.toString()),
+                            title: Text(alltrue[i].title),
+                            trailing: Text(alltrue[index].completed.toString()),
+                          );
+                        }
+                      }
+                      return ListTile(
+                        leading: Text(snapshot.data![index].id.toString()),
+                        title: Text(snapshot.data![index].title),
+                        trailing:
+                            Text(snapshot.data![index].completed.toString()),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
